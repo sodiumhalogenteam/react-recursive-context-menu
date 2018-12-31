@@ -41,7 +41,7 @@ class App extends React.Component {
     return (
       <div className="App">
         <h1>Context Menu</h1>
-        <ContextMenu options={options} onRightClick>
+        <ContextMenu options={options} position="bottom">
           <Button text="Open Menu" />
         </ContextMenu>
       </div>

@@ -1,4 +1,10 @@
 import React from "react";
+import ReactDOM from "react-dom";
+import { Manager, Reference, Popper } from "react-popper";
+import PropTypes from "prop-types";
+
+// components
+import { Popup } from "./popup-arrow-styles";
 
 class ContextMenu extends React.Component {
   state = {
@@ -30,27 +36,110 @@ class ContextMenu extends React.Component {
     this.toggleContextMenu(e);
   };
 
-  toggleContextMenu = e => {
+  toggleContextMenu = (e, toShow = null) => {
     e.preventDefault();
-    this.setState({
-      isShowing: !this.state.isShowing
-    });
+    if (toShow !== null) this.setState({ isShowing: toShow });
+    else {
+      this.setState({
+        isShowing: !this.state.isShowing
+      });
+    }
+  };
+
+  onDocumentClick = e => {
+    const container = document.querySelector("#context-menu-root");
+    let removeListener = false;
+    if (e.target !== container && !container.contains(e.target)) {
+      this.toggleContextMenu(e, false);
+      removeListener = true;
+    } else if (e.target === container && container.contains(e.target)) {
+      this.toggleContextMenu(e);
+      removeListener = true;
+    }
+    if (removeListener) {
+      document.removeEventListener("click", this.onDocumentClick);
+      document.removeEventListener("contextmenu", this.onDocumentClick);
+    }
   };
 
   render() {
-    const { options, children, onRightClick } = this.props;
+    const {
+      options,
+      onRightClick,
+      noPadding,
+      width,
+      margin,
+      position,
+      children,
+      noCarrot,
+      customStyle
+    } = this.props;
     const { isShowing } = this.state;
     return (
       <div>
-        {onRightClick ? (
-          <div onContextMenu={this.toggleContextMenu}>{children}</div>
-        ) : (
-          <div onClick={this.toggleContextMenu}>{children}</div>
-        )}
-        {isShowing ? <div>{this.renderSubmenu(options)}</div> : null}
+        <Manager>
+          <Reference>
+            {({ ref }) => (
+              <div
+                ref={ref}
+                onClick={!onRightClick ? this.toggleContextMenu : null}
+                onContextMenu={onRightClick ? this.toggleContextMenu : null}
+              >
+                {children}
+              </div>
+            )}
+          </Reference>
+          {isShowing
+            ? ReactDOM.createPortal(
+                <Popper placement={position}>
+                  {({ ref, style, placement, arrowProps }) => {
+                    const {
+                      ref: arrowInnerRef,
+                      ...transferArrowProps
+                    } = arrowProps;
+                    document.addEventListener("click", this.onDocumentClick);
+                    document.addEventListener(
+                      "contextmenu",
+                      this.onDocumentClick
+                    );
+                    return (
+                      <div ref={ref} style={style} data-placement={placement}>
+                        {this.renderSubmenu(options)}
+                        <div ref={arrowProps.ref} style={arrowProps.style} />
+                      </div>
+                    );
+                  }}
+                </Popper>,
+                document.querySelector("#context-menu-root")
+              )
+            : null}
+        </Manager>
       </div>
     );
   }
 }
+
+ContextMenu.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array,
+    PropTypes.object
+  ]).isRequired,
+  position: PropTypes.string.isRequired,
+  noPadding: PropTypes.bool,
+  width: PropTypes.string,
+  margin: PropTypes.string,
+  customStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+  noCarrot: PropTypes.bool
+};
+
+ContextMenu.defaultProps = {
+  noPadding: false,
+  width: "",
+  margin: "",
+  toggleContextMenu: () => null,
+  noCarrot: false,
+  customStyle: false
+};
 
 export default ContextMenu;
