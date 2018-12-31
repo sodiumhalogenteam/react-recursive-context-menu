@@ -1,12 +1,53 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import "./styles.css";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import Button from "./Button";
+import ContextMenu from "./ContextMenu";
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const options = [
+  {
+    id: 1,
+    text: "option 1",
+    func: () => {
+      console.log("option 1 chosen");
+    }
+  },
+  {
+    id: 2,
+    text: "option 2",
+    func: () => {
+      console.log("option 2 chosen");
+    }
+  },
+  {
+    id: 3,
+    text: "option 3",
+    func: () => null,
+    options: [
+      {
+        id: 4,
+        text: "suboption 1",
+        func: () => {
+          console.log("suboption 1 chosen");
+        }
+      }
+    ]
+  }
+];
+
+class App extends React.Component {
+  render() {
+    return (
+      <div className="App">
+        <h1>Context Menu</h1>
+        <ContextMenu options={options} onRightClick>
+          <Button text="Open Menu" />
+        </ContextMenu>
+      </div>
+    );
+  }
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
