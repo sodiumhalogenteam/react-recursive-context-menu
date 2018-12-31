@@ -36,18 +36,21 @@ class ContextMenu extends React.Component {
     this.toggleContextMenu(e);
   };
 
-  toggleContextMenu = e => {
+  toggleContextMenu = (e, toShow = null) => {
     e.preventDefault();
-    this.setState({
-      isShowing: !this.state.isShowing
-    });
+    if (toShow !== null) this.setState({ isShowing: toShow });
+    else {
+      this.setState({
+        isShowing: !this.state.isShowing
+      });
+    }
   };
 
   onDocumentClick = e => {
     const container = document.querySelector("#context-menu-root");
     let removeListener = false;
     if (e.target !== container && !container.contains(e.target)) {
-      this.toggleContextMenu(e);
+      this.toggleContextMenu(e, false);
       removeListener = true;
     } else if (e.target === container && container.contains(e.target)) {
       this.toggleContextMenu(e);
@@ -100,18 +103,10 @@ class ContextMenu extends React.Component {
                       this.onDocumentClick
                     );
                     return (
-                      <Popup
-                        ref={ref}
-                        style={customStyle || style}
-                        data-placement={placement}
-                        noPadding={noPadding}
-                        width={width}
-                        margin={margin}
-                        position={position}
-                        noCarrot={noCarrot}
-                      >
+                      <div ref={ref} style={style} data-placement={placement}>
                         {this.renderSubmenu(options)}
-                      </Popup>
+                        <div ref={arrowProps.ref} style={arrowProps.style} />
+                      </div>
                     );
                   }}
                 </Popper>,
