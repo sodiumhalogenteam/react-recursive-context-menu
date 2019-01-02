@@ -42,7 +42,8 @@ class ContextMenu extends React.Component {
     if (toShow !== null) this.setState({ isShowing: toShow });
     else {
       this.setState({
-        isShowing: !this.state.isShowing
+        isShowing: !this.state.isShowing,
+        selectedIds: []
       });
     }
   };
