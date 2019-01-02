@@ -20,12 +20,29 @@ class ContextMenu extends React.Component {
       }
 
       return (
-        <li key={option.id}>
-          <span onClick={e => this.handleOptionClick(e, option.func)}>
-            {option.text}
-          </span>
-          {subMenu}
-        </li>
+        <Manager>
+          <Reference>
+            {({ ref }) => (
+              <li
+                ref={ref}
+                key={option.id}
+                onMouseEnter={this.handleSelectedId(option.id, depthLevel)}
+              >
+                <span onClick={e => this.handleOptionClick(e, option.func)}>
+                  {option.text}
+                </span>
+                <Popper placement="right">
+                  {({ ref, style, placement, arrowProps }) => (
+                    <div ref={ref} style={style} data-placement={placement}>
+                      {subMenu}
+                      <div ref={arrowProps.ref} style={arrowProps.style} />
+                    </div>
+                  )}
+                </Popper>
+              </li>
+            )}
+          </Reference>
+        </Manager>
       );
     });
 
