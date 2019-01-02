@@ -53,7 +53,34 @@ const options = [
         text: "suboption 2",
         func: () => {
           console.log("suboption 2 chosen");
-        }
+        },
+        options: [
+          {
+            id: 8,
+            text: "subsuboption 1",
+            func: () => {
+              console.log("subsuboption 2 chosen");
+            },
+            options: [
+              {
+                id: 9,
+                text: "subsubsuboption 1",
+                func: () => {
+                  console.log("subsubsuboption 1 chosen");
+                },
+                options: [
+                  {
+                    id: 10,
+                    text: "subsubsubsuboption 1",
+                    func: () => {
+                      console.log("subsubsubsuboption 1 chosen");
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
   }
