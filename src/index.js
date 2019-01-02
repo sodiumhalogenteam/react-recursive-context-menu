@@ -11,7 +11,23 @@ const options = [
     text: "option 1",
     func: () => {
       console.log("option 1 chosen");
-    }
+    },
+    options: [
+      {
+        id: 6,
+        text: "suboption 1",
+        func: () => {
+          console.log("suboption 1 chosen");
+        }
+      },
+      {
+        id: 7,
+        text: "suboption 2",
+        func: () => {
+          console.log("suboption 2 chosen");
+        }
+      }
+    ]
   },
   {
     id: 2,
@@ -30,6 +46,13 @@ const options = [
         text: "suboption 1",
         func: () => {
           console.log("suboption 1 chosen");
+        }
+      },
+      {
+        id: 5,
+        text: "suboption 2",
+        func: () => {
+          console.log("suboption 2 chosen");
         }
       }
     ]

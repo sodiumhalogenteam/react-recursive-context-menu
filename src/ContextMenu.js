@@ -8,14 +8,15 @@ import { Popup } from "./popup-arrow-styles";
 
 class ContextMenu extends React.Component {
   state = {
-    isShowing: false
+    isShowing: false,
+    selectedIds: []
   };
 
-  renderSubmenu = options => {
+  renderSubmenu = (options, depthLevel = 0) => {
     const menuOptions = options.map(option => {
       let subMenu;
-      if (option.options && option.options.length > 0) {
-        subMenu = this.renderSubmenu(option.options);
+      if (option.options && this.state.selectedIds[depthLevel] === option.id) {
+        subMenu = this.renderSubmenu(option.options, depthLevel + 1);
       }
 
       return (
@@ -44,6 +45,16 @@ class ContextMenu extends React.Component {
         isShowing: !this.state.isShowing
       });
     }
+  };
+
+  handleSelectedId = (selected, depthLevel) => {
+    return () => {
+      const updatedArray = this.state.selectedIds;
+      updatedArray[depthLevel] = selected;
+      this.setState({
+        selectedIds: updatedArray
+      });
+    };
   };
 
   onDocumentClick = e => {
